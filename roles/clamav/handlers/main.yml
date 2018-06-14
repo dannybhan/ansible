@@ -1,0 +1,9 @@
+---
+# clamav/handlers/main.yml: Primary handlers that will be notified for clamav role
+
+#   - name: Start clamav-daemon
+#     service: name=clamav-daemon state=reloaded
+
+   - name: Restart exim4
+     service: name=exim4 state=restarted
+

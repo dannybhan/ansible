@@ -1,0 +1,9 @@
+---
+# sensu/handlers/main.yml: Master handlers for sensu role
+
+  - name: restart sensu-client service
+    service: name=sensu-client state=restarted
+
+  - name: restart sensu-server service
+    service: name=sensu-server state=restarted
+

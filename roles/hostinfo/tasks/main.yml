@@ -1,0 +1,11 @@
+---
+# hostinfo/tasks/main.yml: Master playbook for changing hostname and/or ip for hostgroup hostinfo
+
+  - include: "{{ role_path}}/tasks/hostname.yml"
+    tags: hostname
+
+  - include: "{{ role_path }}/tasks/ip.yml"
+    tags: ip
+
+  - include: "{{ role_path }}/tasks/reboot.yml"
+    tags: reboot

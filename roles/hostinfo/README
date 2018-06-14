@@ -1,0 +1,4 @@
+This role edits the files /etc/hosts /etc/hostname /etc/network/interfaces using the values set in ansible hosts file.
+If hostnames/ips are changed, it may be necessary to update the domain controller database accordingly.
+
+*Run this role with 'serial: 1' playbook configuration to ensure that system reboots occur one by one*

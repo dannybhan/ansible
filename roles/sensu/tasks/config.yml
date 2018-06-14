@@ -1,0 +1,23 @@
+---
+# tasks/config.yml: Set up essential configurations of Sensu
+
+    - name: Ensure /etc/sensu/conf.d exists
+      file:
+         path: /etc/sensu/conf.d
+         state: directory
+         mode: 0754
+
+    - name: Copy over rabbitmq and transport json's
+      copy:
+         src: "{{ item }}"
+         dest: /etc/sensu/conf.d/
+         mode: 0754
+      with_items:
+         - rabbitmq.json
+         - transport.json
+
+    - name: Configure custom client.yml
+      template: 
+         dest: /etc/sensu/conf.d/
+         src: client.json.j2
+      notify: restart sensu-client service

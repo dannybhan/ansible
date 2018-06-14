@@ -1,0 +1,15 @@
+---
+# cassandra/tasks/config.yml: Configures a new/old Cassandra cluster using the hosts in group cassandra
+
+  - name: Stop cassandra service
+    service: name=casssandra state=stopped
+
+  - name: Remove old dataset
+    shell: sudo rm -rf /var/lib/cassandra/data/system/*
+
+  - name: Template out /etc/cassandra/cassandra.yaml config file
+    template:
+       src: cassandra.yaml.j2
+       dest: /etc/cassandra/cassandra.yaml
+       backup: yes
+    notify: restart cassandra service

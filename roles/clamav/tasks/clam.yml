@@ -1,0 +1,41 @@
+---
+# clamav/tasks/clam.yml: Installs clamav and optionally via uncommenting, clamd, as well as sets their configuration states
+
+   - name: Install ClamAV
+     apt:
+        name: clamav
+        state: latest
+
+#   - name: Install ClamAV-daemon
+#     apt:
+#        name: clamav-daemon
+#        state: latest
+
+   - name: Create/update freshclam config file
+     copy:
+        src: /home/USERNAME/clamav/files/freshclam.conf
+        dest: /etc/clamav/freshclam.conf
+       #owner:
+       #group:
+       #mode:
+
+   - name: Restart clamav-freshclam
+     service:
+        name: clamav-freshclam
+        state: restarted
+#     notify: Start clamav-daemon
+
+#   - name: Stop clamav-daemon
+#     service:
+#        name: clamav-daemon
+#        state: stopped
+
+#   - name: Create/update clamd config file
+#     copy:
+#        src: /home/USERNAME/clamav/files/clamd.conf
+#        dest: /etc/clamav/clamd.conf
+       #owner:
+       #group:
+       #mode:
+#     notify: Start clamav-daemon
+

@@ -1,0 +1,7 @@
+---
+# cassandra/tasks/python.yml: Installs the Python 2.7 package for Cassandra cqlsh
+
+  - name: Install Python2.7 deb package
+    apt:
+       name: python2.7
+       state: present

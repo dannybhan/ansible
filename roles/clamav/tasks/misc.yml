@@ -1,0 +1,19 @@
+---
+# clamav/tasks/misc.yml: Additional tasks- set up an initial one time scan after installing clamav, set up apt autoremove cronjob
+
+   - name: Schedule a one time scan
+     at:
+        script_file: /home/clamav/clamav-scan.sh
+        unique: true
+        count: 10
+        units: minutes
+
+   - name: Cronjob apt-get autoremove
+     cron:
+        name: "Apt-get autoremove"
+        # At midnight every Wednesday
+        weekday: 3
+        minute: 0
+        hour: 0
+        job: "sudo apt-get autoremove -y"
+

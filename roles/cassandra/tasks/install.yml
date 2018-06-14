@@ -1,0 +1,18 @@
+---
+# cassandra/tasks/install.yml: Installs Cassandra only, none of the dependecies such as Java or Python
+
+  - name: add Apache repository of Cassandra
+    apt_repository:
+       repo: deb http://www.apache.org/dist/cassandra/debian 36x main
+       state: present
+
+  - name: Add Apache Cassandra repository key
+    apt_key:
+       url: https://www.apache.org/dist/cassandra/KEYS
+       state: present
+       
+  - name: Install Cassandra
+    apt:
+       name: cassandra
+       state: present
+       update_cache: yes

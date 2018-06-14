@@ -1,0 +1,29 @@
+---
+# cassandra/tasks/java.yml: Installs Java8, necessary for Cassandra install
+
+  - name: Install Java8 repository
+    apt_repository: repo='ppa:webupd8team/java' state=present
+
+#  - name: Accept Oracle license
+#    debconf:
+#       name: 'oracle-java8-installer'
+#       question: 'sharaed/accepted-oracle-license-v1-1'
+#       value: 'true'
+#       vtype: 'select'
+
+  - name: set licence selected
+    shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 select true | /usr/bin/debconf-set-selections
+
+  - name: set licence seen
+    shell: /bin/echo debconf shared/accepted-oracle-license-v1-1 seen true | /usr/bin/debconf-set-selections
+
+  - name: Install Java8
+    apt:
+       name: oracle-java8-installer
+       state: present
+       update_cache: yes
+
+  - name: Set Java default paths
+    apt:
+       name: oracle-java8-set-default
+       state: present

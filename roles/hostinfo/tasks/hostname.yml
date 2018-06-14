@@ -1,0 +1,14 @@
+---
+# hostinfo/tasks/hostname.yml: Changes the /etc/hostname and /etc/hosts files with new hostnames
+
+  - name: Edit /etc/hostname file
+    replace:
+       dest: /etc/hostname
+       regexp: '^{{ ansible_hostname }}'
+       replace: '{{ inventory_hostname }}'
+
+  - name: Edit /etc/hosts file
+    replace:       
+       dest: /etc/hosts
+       regexp: '{{ ansible_hostname }}'
+       replace: '{{ inventory_hostname }}'

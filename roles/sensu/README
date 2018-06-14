@@ -1,0 +1,6 @@
+This role contains the necessary files to provision a new Sensu client using Ansible deployment.
+To use this role, create a playbook and include the role 'sensu' along with the appropriate hosts.
+
+*The ansible commandline option --ask-vault-pass MUST be used as the cert.pem, key.pem, config.json, rabbitmq.json files are encrypted via ansible-vault
+
+Desired sensu plugins should be added in the sensu/tasks/plugins.yml file under the task named

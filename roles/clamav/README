@@ -1,0 +1,31 @@
+This directory should hold playbook, files, and hosts for ClamAV installation for Linux systems.
+
+*Before running playbook installclam_lnx.yml, edit the top line - hosts: <group> to the corresponding group in /hosts/clamhosts that requires ClamAV. 
+*To avoid Ansible ssh error, please run the script allow_ssh.sh after reading the README in /home/USERNAME/allow_ssh/
+
+The default playbook installs ONLY clamav, without clamav-daemon in order to reduce memory usage on hosts. To install the daemon (which will require ~500Mb memory on hosts), uncomment all of the LEFTMOST # in installclam_lnx.yml. Indented # are there for possible added functionalities but are NOT NECESSARY. Uncommenting will result in errors.
+
+Exim4 installation is bundled with this playbook to allow for email notification upon the detection of a virus after a scan has completed. 
+
+====Commands to run the playbook are listed below with brief description====
+
+Check which hosts playbook will run on (does not install anything):
+ansible-playbook -i /home/USERNAME/clamav/hosts/clamhosts /home/USERNAME/clamav/playbooks/installclam_lnx.yml --list-hosts
+
+Test run (recommended as first time run to check for any host issues, does not install anything, but as such, may encounter errors that a real run will resolve):
+ansible-playbook -i /home/USERNAME/clamav/hosts/clamhosts /home/USERNAME/clamav/playbooks/installclam_lnx.yml --ask-sudo-pass --check
+
+Run the playbook from any directory, prompting for sudo password once in the beginning:
+ansible-playbook -i /home/USERNAME/clamav/hosts/clamhosts /home/USERNAME/clamav/playbooks/installclam_lnx.yml --ask-sudo-pass
+
+============================================================================
+
+Ansible documentation:  http://docs.ansible.com/ansible/playbooks.html
+
+
+Extra information about this clamav installation:
+clamav installation comes with the clamav virus database updater freshclam, which automatically updates the database using the configuration file freshclam.conf found in /files/ and default installs to /etc/clamav/ on hosts. This file can be modified as desired, documentation here: https://linux.die.net/man/5/freshclam.conf
+
+clamav-daemon is a background process that consumes some system memory but allows for faster scans via clamdscan instead of clamscan. Clamdscan uses configuration file clamd.conf found in /files/ and default installs to /etc/clamav/ on hosts. It can also be modified as desired, documentation here: https://linux.die.net/man/5/clamd.conf
+
+exim4 is the mail transfer agent used to send a notification email upon virus detection. The config file for exim4, update-exim4.conf.conf is found in /files/ and default installs to /etc/exim4/ on hosts and should not be edited unless necessary. Before editing update-exim4.conf.conf, verify that the new config works as expected on a test host, otherwise email relay may not work!

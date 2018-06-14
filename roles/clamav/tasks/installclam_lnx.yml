@@ -1,0 +1,141 @@
+---
+  # pick host group to use and execute commands as superuser
+- hosts: add
+  become: yes
+  become_method: sudo
+
+  # ClamAV setup tasks
+  tasks:
+
+   - name: Install required package aptitude
+     apt:
+        name: aptitude 
+        state: latest
+
+#   - name: Update and upgrade apt
+#     apt: >
+#       upgrade=yes
+#       update_cache=yes
+
+   - name: Install ClamAV
+     apt:
+        name: clamav
+        state: latest
+ 
+#   - name: Install ClamAV-daemon
+#     apt:
+#        name: clamav-daemon
+#        state: latest
+
+   - name: Create/update freshclam config file
+     copy:
+        src: /home/USERNAME/clamav/files/freshclam.conf
+        dest: /etc/clamav/freshclam.conf
+       #owner:
+       #group:
+       #mode:
+
+   - name: Restart clamav-freshclam
+     service:
+        name: clamav-freshclam
+        state: restarted
+#     notify: Start clamav-daemon
+   
+#   - name: Stop clamav-daemon
+#     service: 
+#        name: clamav-daemon
+#        state: stopped
+
+#   - name: Create/update clamd config file
+#     copy:
+#        src: /home/USERNAME/clamav/files/clamd.conf
+#        dest: /etc/clamav/clamd.conf
+       #owner:
+       #group:
+       #mode:
+#     notify: Start clamav-daemon
+
+   - name: Make /home/clamav directory for saving scripts/logs
+     file: 
+        path: /home/clamav
+        state: directory
+       #owner:
+       #group:
+        mode: 0755
+
+   - name: Copy over clamdscan script
+     copy:
+        src: /home/USERNAME/clamav/files/clamav-scan.sh
+        dest: /home/clamav
+       #owner:
+       #group:
+        mode: a+x
+   
+   - name: Remove any old clamscan cronjob
+     cron:
+        name: "Weekly clamdscan via clamav-scan.sh"
+        state: absent
+
+   - name: Schedule clamscan cronjob
+     cron:
+        name: "Weekly clamdscan via clamav-scan.sh"
+        # Run job every Monday at 2AM
+        minute: 0
+        hour: 2
+        weekday: 1
+        job: /home/clamav/clamav-scan.sh
+       #backup: yes
+
+   - name: Install exim4
+     apt:
+        name: exim4
+        state: latest
+
+   - name: Copy over exim4 config file
+     copy:
+        src: /home/USERNAME/clamav/files/update-exim4.conf.conf
+        dest: /etc/exim4/update-exim4.conf.conf
+       #owner:
+       #group:
+       #mode:
+
+   - name: Replace dc_other_hostnames line in update-exim4.conf.conf
+     replace:
+        dest: /etc/exim4/update-exim4.conf.conf
+        regexp: "(^dc_other_hostnames='')"
+        replace: "dc_other_hostnames='{{ inventory_hostname }}.INTERNALSERVER.com; {{ inventory_hostname }}; localhost.INTERNALSERVER.com; localhost'"
+
+   - name: Add servername to /etc/email-addresses
+     lineinfile:
+        dest: /etc/email-addresses
+        line: 'root: root@{{ inventory_hostname }}'
+        state: present
+
+   - name: Reconfigure exim4
+     shell: update-exim4.conf
+     notify: Restart exim4        
+
+   - name: Schedule a one time scan
+     at:
+        script_file: /home/clamav/clamav-scan.sh
+        unique: true
+        count: 10
+        units: minutes
+
+   - name: Cronjob apt-get autoremove
+     cron:
+        name: "Apt-get autoremove"
+        # At midnight every Wednesday
+        weekday: 3
+        minute: 0
+        hour: 0
+        job: "sudo apt-get autoremove -y"
+
+  # Handlers which are run when the corresponding notify statement/tasks complete
+  handlers:
+
+#   - name: Start clamav-daemon
+#     service: name=clamav-daemon state=reloaded
+ 
+   - name: Restart exim4
+     service: name=exim4 state=restarted

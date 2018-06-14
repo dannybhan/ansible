@@ -1,0 +1,10 @@
+---
+# hostinfo/tasks/reboot.yml: Reboots the current server and waits for it to come back up
+
+  - name: Reboot server {{ ansible_host }}
+    command: /sbin/reboot
+    async: 0
+    poll: 0
+
+  - name: Server {{ ansible_host }} is alive again
+    local_action: wait_for host={{ ansible_host }} state=started port=22 delay=15

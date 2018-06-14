@@ -1,0 +1,29 @@
+---
+# sensu/tasks/plugins.yml: Set up plugins for Sensu client 
+
+    - name: Ensure pre-requisite packages for plugins
+      apt:
+         name: "{{ item }}"
+         state: latest
+      with_items:
+         - ruby
+         - ruby-dev
+         - build-essential
+
+    - name: Install sensu-plugin gem
+      gem:
+         name: sensu-plugin
+         state: latest
+
+
+  # Now install the following plugins via gem
+
+    - name: Install desired plugins
+      gem:
+         name: "{{ item }}"
+         state: present
+         executable: /opt/sensu/embedded/bin/gem
+      with_items:
+         # add desired plugins here:
+#         - sensu-plugins-docker
+         - sensu-plugins-cpu-checks

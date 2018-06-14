@@ -1,0 +1,19 @@
+---
+# clamav/tasks/main.yml: Master plays for installing clamav on Ubuntu hosts
+
+    - name: Install required package aptitude
+      apt:
+         name: aptitude
+         state: latest
+
+    - include: "{{ role_path }}/tasks/clam.yml"
+      tags: install_clam
+
+    - include: "{{ role_path }}/tasks/clamscan.yml"
+      tags: clamscan
+
+    - include: "{{ role_path }}/tasks/exim.yml"
+      tags: exim
+
+    - include: "{{ role_path }}/tasks/misc.yml"
+      tags: misc

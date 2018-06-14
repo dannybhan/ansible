@@ -1,0 +1,32 @@
+---
+# clamav/tasks/exim.yml: Installs and configures Exim4 smarthost mail relay
+
+   - name: Install exim4
+     apt:
+        name: exim4
+        state: latest
+
+   - name: Copy over exim4 config file
+     copy:
+        src: /home/USERNAME/clamav/files/update-exim4.conf.conf
+        dest: /etc/exim4/update-exim4.conf.conf
+       #owner:
+       #group:
+       #mode:
+
+   - name: Replace dc_other_hostnames line in update-exim4.conf.conf
+     replace:
+        dest: /etc/exim4/update-exim4.conf.conf
+        regexp: "(^dc_other_hostnames='')"
+        replace: "dc_other_hostnames='{{ inventory_hostname }}.INTERNALSERVER.com; {{ inventory_hostname }}; localhost.INTERNALSERVER.com; localhost'"
+
+   - name: Add servername to /etc/email-addresses
+     lineinfile:
+        dest: /etc/email-addresses
+        line: 'root: root@{{ inventory_hostname }}'
+        state: present
+
+   - name: Reconfigure exim4
+     shell: update-exim4.conf
+     notify: Restart exim4
+

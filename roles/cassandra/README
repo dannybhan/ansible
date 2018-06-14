@@ -1,0 +1,7 @@
+This role installs Apache Cassandra +required packages with default configurations on servers. 
+To change Cassandra configs, edit the files located in cassandra/files/
+
+===== Tags for custom install preferences =====
+java: Installs Oracle JDK8 via webupd8team ppa
+python: Installs Python2.7
+install_cass: Installs Apache Cassandra 

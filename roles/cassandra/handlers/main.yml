@@ -1,0 +1,9 @@
+---
+# cassandra/handlers/main.yml: Master handler file for cassandra role
+
+    # Cassandra service must be stopped before editing Cassandra configs, and then restarted after changes are made
+  - name: stop cassandra service
+    service: name=cassandra state=stopped
+
+  - name: restart cassandra service
+    service: name=cassandra state=restarted

@@ -1,0 +1,69 @@
+---
+# immunet/tasks/main.yml: Master playbook for installing Immunet with scheduled scans
+
+   - name: Check if Immunet is installed
+     win_stat: path='C:\Program Files\Immunet\local.xml'
+     register: immunet_installed
+
+#   - name: Create C:\temp
+#     win_file:
+#        path: C:\temp
+#        state: directory
+
+   - name: Download ImmunetSetup.exe
+     win_package:
+        path: https://download.immunet.com/binaries/immunet/bin/ImmunetSetup.exe
+        product_id: 'Immunet Protect'
+        state: present
+        arguments: /S
+     when: not immunet_installed.stat.exists
+
+   - name: Stop Immunet service
+     win_service:
+        name: ImmunetProtect_5.0.2
+        state: stopped
+
+   - name: Create a scheduled scan in local.xml
+     win_lineinfile: 
+        dest: C:\Program Files\Immunet\local.xml
+        regex: '/scansettings'
+        insertbefore: '</scansettings>'
+        line: '    <scheduled>20|-2027302365|Weekly Full Scan (Sunday at 3:00 AM)|5|2046|-|48|0|2017|7|31|2019|7|31|3|0|0|0|1|2|1|1|0|0|0</scheduled>'
+     when: not immunet_installed.stat.exists
+
+   - name: Adjust Immunet Tetra options
+     win_lineinfile:
+        dest: C:\Program Files\Immunet\local.xml
+        regex: '/scansettings'
+        insertbefore: '</scansettings>'
+        line: '    <tetra>
+     <options>
+      <ondemand>
+       <scanpacked>1</scanpacked>
+       <scanarchives>0</scanarchives>
+      </ondemand>
+     </options>
+    </tetra>'
+     when: not immunet_installed.stat.exists
+
+   - name: Adjust Immunet to not send files for analysis
+     win_lineinfile:
+        dest: C:\Program Files\Immunet\local.xml
+        regex: '</agent>'
+        insertbefore: '</agent>'
+        line: "   <cloud>
+    <upload>
+     <enabled>0</enabled>
+    </upload>
+   </cloud>"
+     when: not immunet_installed.stat.exists
+
+   - name: Start Immunet service
+     win_service:
+        name: ImmunetProtect_5.0.2
+        state: restarted
+
+#   - name: Remove ImmunetSetup.exe from temp
+#     win_file:
+#        path: C:\temp\ImmunetSetup.exe
+#        state: absent

@@ -1,0 +1,19 @@
+---
+# sensu/tasks/main.yml: Main set of tasks to be run when installing Sensu
+
+    - name: Install required package aptitude
+      apt:
+         name: aptitude
+         state: latest
+
+    - include: "{{ role_path }}/tasks/install.yml"
+      tags: install
+
+    - include: "{{ role_path }}/tasks/config.yml"
+      tags: config
+
+    - include: "{{ role_path }}/tasks/ssl.yml"
+      tags: ssl
+
+    - include: "{{ role_path }}/tasks/plugins.yml"
+      tags: plugins

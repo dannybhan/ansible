@@ -1,0 +1,19 @@
+---
+# sensu/tasks/ssl.yml: Set up ssl connection for Sensu
+
+    - name: Ensure /etc/sensu/ssl exists
+      file:
+         path: /etc/sensu/ssl
+         state: directory
+         mode: 0754
+
+    - name: Transfer ssl keys
+      copy:
+         src: "{{ item }}"
+         dest: /etc/sensu/ssl/
+         mode: 0754
+      with_items:
+         - cert.pem
+         - key.pem
+
+

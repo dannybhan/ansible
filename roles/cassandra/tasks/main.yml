@@ -1,0 +1,20 @@
+---
+# cassandra/tasks/main.yml: Master playbook for installing Cassandra on a new U16.04 server
+
+  - name: Install required package aptitude
+    apt:
+       name: aptitude
+       state: latest
+
+  - include: "{{ role_path }}/tasks/java.yml"
+    tags: java
+
+  - include: "{{ role_path }}/tasks/python.yml"
+    tags: python
+
+  - include: "{{ role_path }}/tasks/install.yml"
+    tags: install_cass
+
+  - include: "{{ role_path }}/tasks/config.yml"
+    tags: config_cluster
+

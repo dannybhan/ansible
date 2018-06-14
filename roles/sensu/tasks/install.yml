@@ -1,0 +1,25 @@
+---
+# sensu/tasks/install.yml: Install Sensu Core
+
+    - name: Add Sensu key
+      apt_key:
+         url: https://sensu.global.ssl.fastly.net/apt/pubkey.gpg
+         state: present
+
+    - name: Create sensu.list apt config file
+      file:
+         path: /etc/apt/sources.list.d/sensu.list
+         state: touch
+         mode: 0754
+
+    - name: Add config line
+      lineinfile:
+         dest: /etc/apt/sources.list.d/sensu.list
+         line: 'deb     https://sensu.global.ssl.fastly.net/apt {{ ansible_distribution_release }} main'
+         state: present
+
+    - name: Install Sensu Core on client
+      apt:
+         name: sensu
+         state: latest
+

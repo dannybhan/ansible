@@ -1,0 +1,5 @@
+The immunet role installs the cloud-based AV Immunet on WINDOWS servers with powershell v3 and ansible remoting configured.
+
+To configure Window's servers for ansible remote access:
+https://github.com/ansible/ansible/blob/devel/examples/scripts/ConfigureRemotingForAnsible.ps1
+

@@ -1,0 +1,23 @@
+---
+# hostinfo/tasks/ip.yml: Edits the /etc/hosts and /etc/network/interfaces files
+# variable new_ip should be defined in the ansible hosts file
+
+  - name: Edit /etc/hosts file
+    replace:
+       dest: /etc/hosts
+       regexp: '{{ ansible_host }}'
+       replace: '{{ new_ip }}'
+    when: new_ip is defined
+
+  - name: Edit /etc/network/interfaces file
+    replace:
+       dest: /etc/network/interfaces
+       regexp: '{{ ansible_host }}'
+       replace: '{{ new_ip }}'
+    when: new_ip is defined
+
+#  - name: Find interface name
+#    shell: grep -oP "iface\s+\K\w+" /etc/network/interfaces
+#    register: greped_interface
+#    always_run: True
+

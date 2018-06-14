@@ -1,0 +1,34 @@
+---
+# clamav/tasks/clamscan.yml: Sets up a recurring custom clamscan via cron
+
+   - name: Make /home/clamav directory for saving scripts/logs
+     file:
+        path: /home/clamav
+        state: directory
+       #owner:
+       #group:
+        mode: 0755
+
+   - name: Copy over clamdscan script
+     copy:
+        src: /home/USERNAME/clamav/files/clamav-scan.sh
+        dest: /home/clamav
+       #owner:
+       #group:
+        mode: a+x
+
+   - name: Remove any old clamscan cronjob
+     cron:
+        name: "Weekly clamdscan via clamav-scan.sh"
+        state: absent
+
+   - name: Schedule clamscan cronjob
+     cron:
+        name: "Weekly clamdscan via clamav-scan.sh"
+        # Run job every Monday at 2AM
+        minute: 0
+        hour: 2
+        weekday: 1
+        job: /home/clamav/clamav-scan.sh
+       #backup: yes
+
